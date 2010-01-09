@@ -1,4 +1,5 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python2
+# -*- coding: utf-8 -*- 
 '''
 * This file is part of X-Fi2-RSS.
 * X-Fi2-RSS is free software: you can redistribute it and/or modify
@@ -22,10 +23,8 @@ author: Jonas Schwabe
 from getopt import getopt, GetoptError
 from helps import *
 from rss import *
-from _pyio import open
 import os
-
-
+import ConfigParser
 debug = False
 config = None
 root = False
@@ -42,11 +41,15 @@ def main(args=None):
     global configfile
     global config
     global debug
+    global cfg
+    global sync
+    sync = False
     if args == None:
         args = sys.argv[1:]
     try:
-        opts, args = getopt(args[0:], 'hdc:', ['help', 'debug', 'config='])
-    
+        opts, args = getopt(args[0:], 'hdc:sa:r:t:o:', ['help', 'debug', 'config=', 'sync', 'add=', 'remove=', 'time=', 'old='])
+        if opts == []:
+            opts, args = getopt(args[1:], 'hdc:sa:r:t:o:', ['help', 'debug', 'config=', 'sync', 'add=', 'remove=', 'time=', 'old='])
     except GetoptError as err:
         print(err)
         print()
@@ -78,10 +81,15 @@ def main(args=None):
         cfgf.close()
     except:
         print('Config file does not exists! Create one.')
-        open(configfile, 'w').close()
-        config = ''
+        try:
+            open(configfile, 'w').close()
+            config = ''
+        except:
+            print('Could not write configfile %s.' % configfile)
+            sys.exit(1)
         
     for a, o in opts:
+        print(a)
         if a in ('-h', '--help'):
             help()
         elif a in ('-d', '--debug'):
@@ -89,7 +97,33 @@ def main(args=None):
         elif a in ('-c', '--config'):
             print('Used config %s, I recommend to use the websync.ini in the root directory of the player, to get Windows compatibility. If you hate Windows forget about :)' % o)
             config = o
-#        elif a in ()
+        elif a in ('-a', '--add'):
+            pass
+        elif a in ('-r', '--remove'):
+            pass
+        elif a in ('-t', '--time'):
+            pass
+        elif a in ('-o', '--old'):
+            if not o == 'delete' and not o == 'store':
+                print("Delte or store was expected for --old")
+                sys.exit(1)
+            else:
+                print('Not implemented yet! TODO')
+                #TODO What to do with old enterys?
+        elif a in ('-s', '--sync'):
+            print('sync')
+            sync = True
+    cfg = ConfigParser.ConfigParser()
+    cfg.read(configfile)
+    try:
+        print("Last update: %s" % cfg.get('Options', 'UpdateTime'))
+        print("%s RSS Feeds is/are available" % cfg.get('Options', 'RSS Count'))
+    except:
+        print("Configfile does not exist or is invalid use fix to get it right (not implemented now)")
+        sys.exit(1)
+    if sync:
+        syncall(cfg, root)
+        
 if __name__ == '__main__':
     main()
 pass

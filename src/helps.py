@@ -20,7 +20,9 @@ author: Jonas Schwabe
 
 def help():
     print("""Parameters for X-Fi2-RSS:
-    
+
+Usage: main [Path/To/Player] [c][ds|a|r][to]
+
 Common:
     -h    --help      |print this page
     -d    --debug     |Starts debugoutput
@@ -37,7 +39,7 @@ Deletes Ubuntuusers feed and planet feed.
 
 Config:
     -t    --time      |Set timestamp format for new synced feeds
-    -o    --old       |Use =delete to delete or store to store old entrys""")
+    -o    --old       |Use =delete to delete or =store to store old entrys""")
 
 def usage():
     print("""This is free software licensed under GnuGPLv3
