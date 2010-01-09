@@ -28,14 +28,13 @@ def getRssFeed(url, full):
     f = feedparser.parse(url)
     for entery in f['entries']:
         try:
-            newentery = (str(entery.title.encode()), str(entery.link.encode()), str(entery.summary.encode()), str(entery.updated.encode()))
+            newentery = (str(entery.title.encode('utf-8')), str(entery.link.encode('utf-8')), str(entery.summary.encode('utf-8')), str(entery.updated.encode('utf-8')))
         except:
             try:
-                newentery = (str(entery.title.encode()), str(entery.link.encode()), str(entery.subtitle.encode()), str(entery.updated.encode()))
+                newentery = (str(entery.title.encode('utf-8')), str(entery.link.encode('utf-8')), str(entery.subtitle.encode('utf-8')), str(entery.updated.encode('utf-8')))
             except:
                 continue
         rssitems.append(newentery)
-        print(newentery)
     return (f['feed']['title'].encode(), rssitems)
 
 def syncall(config, root):
